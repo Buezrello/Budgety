@@ -11,7 +11,26 @@ var budgetController = (function () {
 // UI CONTROLLER
 var UIController = (function () {
     
-    // Some code
+    var DOMstrings = {
+        inputType: '.add__type',
+        inputDescription: '.add__description',
+        inputValue: '.add__value',
+        inputBtn: '.add__btn'
+    }
+    
+    return {
+        getinput: function () {
+            return {
+                type: document.querySelector(DOMstrings.inputType).value,  //  will be either inc or exp
+                description: document.querySelector(DOMstrings.inputDescription).value,
+                value: document.querySelector(DOMstrings.inputValue).value
+            };
+        },
+        
+        getDOMstrings: function () {
+            return DOMstrings;
+        }
+    };
     
 })();
 
@@ -20,8 +39,27 @@ var UIController = (function () {
 // GLOBAL APP CONTROLLER
 var controller = (function (budgetCtrl, UICtrl) {
     
+    var setupEventListeners = function () {
+        
+        var DOM = UICtrl.getDOMstrings();
+        
+        document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+    
+        // this event happens globaly
+        // so we cannot add it to buttom
+        document.addEventListener('keypress', function (event) {
+            // event.which -- for old browsers
+            if (event.keyCode === 13 || event.which === 13) {
+                ctrlAddItem();
+            }
+        });
+    };
+    
+    
     var ctrlAddItem = function () {
-        // 1. Get field inout
+        // 1. Get field input
+        var input = UICtrl.getinput();
+        console.log(input);
         
         // 2. Add item to budget controller
         
@@ -31,21 +69,16 @@ var controller = (function (budgetCtrl, UICtrl) {
         
         // 5. Display the budget on UI
         
-        console.log('It\'s alive!');
-    }
+    };
     
-    document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
-    
-    // this event happens globaly
-    // so we cannot add it to buttom
-    document.addEventListener('keypress', function (event) {
-        
-        // event.which -- for old browsers
-        if (event.keyCode === 13 || event.which === 13) {
-            ctrlAddItem();
+    return {
+        init: function () {
+            console.log('Application stared.')
+            setupEventListeners();
         }
-        
-    });
+    }
     
 })(budgetController, UIController);
 
+
+controller.init();
